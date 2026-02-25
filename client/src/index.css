@@ -1,9 +1,32 @@
+/* Bootstrap base */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+/* Global theme overrides – minimal, modern */
+:root {
+  --app-navbar-bg: #1a1d21;
+  --app-navbar-text: rgba(255, 255, 255, 0.9);
+  --app-navbar-hover: rgba(255, 255, 255, 0.12);
+  --app-navbar-active: rgba(255, 255, 255, 0.18);
+  --app-accent: #0d6efd;
+  --app-body-bg: #f8f9fa;
+  --app-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--app-body-bg);
+}
+
+/* Main content area (used by Layout) */
+.app-main {
+  flex: 1;
+  padding: 1.5rem 0;
+  background-color: var(--app-body-bg);
 }

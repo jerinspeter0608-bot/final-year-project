@@ -1,6 +1,15 @@
 import { useState, useEffect } from 'react'
 import { api } from '../api'
-import './Page.css'
+import {
+  Card,
+  Row,
+  Col,
+  Form,
+  Button,
+  Table,
+  Alert,
+  Spinner,
+} from 'react-bootstrap'
 
 export default function Restock() {
   const [products, setProducts] = useState([])
@@ -64,91 +73,116 @@ export default function Restock() {
   }
 
   return (
-    <div className="page">
-      <h1>Restock</h1>
-      {error && <div className="error-msg">{error}</div>}
-      {success && <div className="success-msg">{success}</div>}
+    <>
+      <h1 className="h4 mb-4 fw-semibold">Restock</h1>
+      {error && <Alert variant="danger" dismissible onClose={() => setError('')}>{error}</Alert>}
+      {success && <Alert variant="success" dismissible onClose={() => setSuccess('')}>{success}</Alert>}
 
-      <div className="form-card">
-        <h2>Record Restock</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-row">
-            <label>Product</label>
-            <select
-              value={form.productId}
-              onChange={(e) => setForm({ ...form, productId: e.target.value })}
-              required
-            >
-              <option value="">Select product</option>
-              {products.map((p) => (
-                <option key={p._id} value={p._id}>
-                  {p.productName} (Current: {p.quantity})
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-row">
-            <label>Supplier</label>
-            <select
-              value={form.supplierId}
-              onChange={(e) => setForm({ ...form, supplierId: e.target.value })}
-              required
-            >
-              <option value="">Select supplier</option>
-              {suppliers.map((s) => (
-                <option key={s._id} value={s._id}>
-                  {s.supplierName}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-row">
-            <label>Quantity Added</label>
-            <input
-              type="number"
-              min="1"
-              value={form.quantityAdded}
-              onChange={(e) => setForm({ ...form, quantityAdded: e.target.value })}
-              required
-            />
-          </div>
-          <div className="form-actions">
-            <button type="submit" className="btn btn-primary" disabled={submitting}>
-              {submitting ? 'Saving...' : 'Record Restock'}
-            </button>
-          </div>
-        </form>
-      </div>
-
-      <h2 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Restock History</h2>
-      <div className="table-wrap">
-        {loading ? (
-          <p className="empty-msg">Loading...</p>
-        ) : restocks.length === 0 ? (
-          <p className="empty-msg">No restock entries yet.</p>
-        ) : (
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th>Supplier</th>
-                <th>Qty Added</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {restocks.map((r) => (
-                <tr key={r._id}>
-                  <td>{r.productId?.productName || '—'}</td>
-                  <td>{r.supplierId?.supplierName || '—'}</td>
-                  <td>{r.quantityAdded}</td>
-                  <td>{r.createdAt ? new Date(r.createdAt).toLocaleString() : '—'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-    </div>
+      <Row>
+        <Col lg={5} className="mb-4">
+          <Card className="border-0 shadow-sm h-100">
+            <Card.Header className="bg-white border-bottom py-3">
+              <Card.Title as="h6" className="mb-0 fw-semibold">
+                Record restock
+              </Card.Title>
+            </Card.Header>
+            <Card.Body>
+              <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Product</Form.Label>
+                  <Form.Select
+                    value={form.productId}
+                    onChange={(e) => setForm({ ...form, productId: e.target.value })}
+                    required
+                  >
+                    <option value="">Select product</option>
+                    {products.map((p) => (
+                      <option key={p._id} value={p._id}>
+                        {p.productName} (Current: {p.quantity})
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Supplier</Form.Label>
+                  <Form.Select
+                    value={form.supplierId}
+                    onChange={(e) => setForm({ ...form, supplierId: e.target.value })}
+                    required
+                  >
+                    <option value="">Select supplier</option>
+                    {suppliers.map((s) => (
+                      <option key={s._id} value={s._id}>
+                        {s.supplierName}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Quantity added</Form.Label>
+                  <Form.Control
+                    type="number"
+                    min={1}
+                    value={form.quantityAdded}
+                    onChange={(e) => setForm({ ...form, quantityAdded: e.target.value })}
+                    required
+                  />
+                </Form.Group>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  className="w-100"
+                  disabled={submitting}
+                >
+                  {submitting ? 'Saving...' : 'Record restock'}
+                </Button>
+              </Form>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col lg={7}>
+          <Card className="border-0 shadow-sm">
+            <Card.Header className="bg-white border-bottom py-3">
+              <Card.Title as="h6" className="mb-0 fw-semibold">
+                Restock history
+              </Card.Title>
+            </Card.Header>
+            {loading ? (
+              <Card.Body className="text-center py-5">
+                <Spinner animation="border" size="sm" />
+                <span className="ms-2">Loading...</span>
+              </Card.Body>
+            ) : restocks.length === 0 ? (
+              <Card.Body className="text-center text-muted py-5">
+                No restock entries yet.
+              </Card.Body>
+            ) : (
+              <Table responsive hover className="mb-0">
+                <thead className="table-light">
+                  <tr>
+                    <th>Product</th>
+                    <th>Supplier</th>
+                    <th>Qty added</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {restocks.map((r) => (
+                    <tr key={r._id}>
+                      <td>{r.productId?.productName || '—'}</td>
+                      <td className="text-muted">{r.supplierId?.supplierName || '—'}</td>
+                      <td>{r.quantityAdded}</td>
+                      <td className="text-muted small">
+                        {r.createdAt ? new Date(r.createdAt).toLocaleString() : '—'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            )}
+          </Card>
+        </Col>
+      </Row>
+    </>
   )
 }

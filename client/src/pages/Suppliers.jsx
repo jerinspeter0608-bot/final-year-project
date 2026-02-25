@@ -1,13 +1,21 @@
 import { useState, useEffect } from 'react'
 import { api } from '../api'
-import './Page.css'
+import {
+  Card,
+  Table,
+  Button,
+  Modal,
+  Form,
+  Alert,
+  Spinner,
+} from 'react-bootstrap'
 
 export default function Suppliers() {
   const [suppliers, setSuppliers] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-  const [showForm, setShowForm] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState({
     supplierName: '',
@@ -30,7 +38,7 @@ export default function Suppliers() {
   const openAdd = () => {
     setEditingId(null)
     setForm({ supplierName: '', contactNumber: '', email: '', address: '' })
-    setShowForm(true)
+    setShowModal(true)
     setError('')
     setSuccess('')
   }
@@ -43,13 +51,13 @@ export default function Suppliers() {
       email: s.email || '',
       address: s.address || '',
     })
-    setShowForm(true)
+    setShowModal(true)
     setError('')
     setSuccess('')
   }
 
-  const closeForm = () => {
-    setShowForm(false)
+  const closeModal = () => {
+    setShowModal(false)
     setEditingId(null)
   }
 
@@ -69,7 +77,7 @@ export default function Suppliers() {
         setSuccess('Supplier added.')
       }
       loadSuppliers()
-      closeForm()
+      closeModal()
     } catch (err) {
       setError(err.message)
     }
@@ -87,110 +95,112 @@ export default function Suppliers() {
   }
 
   return (
-    <div className="page">
-      <h1>Suppliers</h1>
-      {error && <div className="error-msg">{error}</div>}
-      {success && <div className="success-msg">{success}</div>}
-      <div className="page-actions">
-        <button type="button" className="btn btn-primary" onClick={openAdd}>
+    <>
+      <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
+        <h1 className="h4 mb-0 fw-semibold">Suppliers</h1>
+        <Button variant="primary" size="sm" onClick={openAdd}>
           Add Supplier
-        </button>
+        </Button>
       </div>
 
-      {showForm && (
-        <div className="modal-overlay" onClick={closeForm}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h2>{editingId ? 'Edit Supplier' : 'Add Supplier'}</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="form-row">
-                <label>Supplier Name</label>
-                <input
-                  value={form.supplierName}
-                  onChange={(e) => setForm({ ...form, supplierName: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="form-row">
-                <label>Contact Number</label>
-                <input
-                  value={form.contactNumber}
-                  onChange={(e) => setForm({ ...form, contactNumber: e.target.value })}
-                />
-              </div>
-              <div className="form-row">
-                <label>Email</label>
-                <input
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                />
-              </div>
-              <div className="form-row">
-                <label>Address</label>
-                <input
-                  value={form.address}
-                  onChange={(e) => setForm({ ...form, address: e.target.value })}
-                />
-              </div>
-              <div className="form-actions">
-                <button type="submit" className="btn btn-primary">
-                  {editingId ? 'Update' : 'Add'}
-                </button>
-                <button type="button" className="btn btn-secondary" onClick={closeForm}>
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {error && <Alert variant="danger" dismissible onClose={() => setError('')}>{error}</Alert>}
+      {success && <Alert variant="success" dismissible onClose={() => setSuccess('')}>{success}</Alert>}
 
-      <div className="table-wrap">
+      <Card className="border-0 shadow-sm">
         {loading ? (
-          <p className="empty-msg">Loading...</p>
+          <Card.Body className="text-center py-5">
+            <Spinner animation="border" size="sm" />
+            <span className="ms-2">Loading suppliers...</span>
+          </Card.Body>
         ) : suppliers.length === 0 ? (
-          <p className="empty-msg">No suppliers. Add one above.</p>
+          <Card.Body className="text-center text-muted py-5">
+            No suppliers yet. Click &quot;Add Supplier&quot; to create one.
+          </Card.Body>
         ) : (
-          <table className="data-table">
-            <thead>
+          <Table responsive hover className="mb-0">
+            <thead className="table-light">
               <tr>
                 <th>Name</th>
                 <th>Contact</th>
                 <th>Email</th>
                 <th>Address</th>
-                <th>Actions</th>
+                <th className="text-end">Actions</th>
               </tr>
             </thead>
             <tbody>
               {suppliers.map((s) => (
                 <tr key={s._id}>
-                  <td>{s.supplierName}</td>
-                  <td>{s.contactNumber || '—'}</td>
-                  <td>{s.email || '—'}</td>
-                  <td>{s.address || '—'}</td>
-                  <td>
-                    <button
-                      type="button"
-                      className="btn btn-secondary btn-sm"
-                      onClick={() => openEdit(s)}
-                    >
+                  <td className="fw-medium">{s.supplierName}</td>
+                  <td className="text-muted">{s.contactNumber || '—'}</td>
+                  <td className="text-muted">{s.email || '—'}</td>
+                  <td className="text-muted">{s.address || '—'}</td>
+                  <td className="text-end">
+                    <Button variant="outline-secondary" size="sm" className="me-1" onClick={() => openEdit(s)}>
                       Edit
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-danger btn-sm"
-                      onClick={() => handleDelete(s._id, s.supplierName)}
-                      style={{ marginLeft: '0.5rem' }}
-                    >
+                    </Button>
+                    <Button variant="outline-danger" size="sm" onClick={() => handleDelete(s._id, s.supplierName)}>
                       Delete
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}
             </tbody>
-          </table>
+          </Table>
         )}
-      </div>
-    </div>
+      </Card>
+
+      <Modal show={showModal} onHide={closeModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>{editingId ? 'Edit Supplier' : 'Add Supplier'}</Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleSubmit}>
+          <Modal.Body>
+            {error && <Alert variant="danger" className="py-2 small">{error}</Alert>}
+            <Form.Group className="mb-3">
+              <Form.Label>Supplier name</Form.Label>
+              <Form.Control
+                value={form.supplierName}
+                onChange={(e) => setForm({ ...form, supplierName: e.target.value })}
+                required
+                placeholder="e.g. ABC Wholesale"
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Contact number</Form.Label>
+              <Form.Control
+                value={form.contactNumber}
+                onChange={(e) => setForm({ ...form, contactNumber: e.target.value })}
+                placeholder="e.g. 9876543210"
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                placeholder="supplier@example.com"
+              />
+            </Form.Group>
+            <Form.Group className="mb-0">
+              <Form.Label>Address</Form.Label>
+              <Form.Control
+                value={form.address}
+                onChange={(e) => setForm({ ...form, address: e.target.value })}
+                placeholder="Optional"
+              />
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={closeModal}>
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit">
+              {editingId ? 'Update' : 'Add'}
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+    </>
   )
 }

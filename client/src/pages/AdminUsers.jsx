@@ -1,6 +1,15 @@
 import { useState, useEffect } from 'react'
 import { api } from '../api'
-import './Page.css'
+import {
+  Card,
+  Table,
+  Button,
+  Modal,
+  Form,
+  Alert,
+  Spinner,
+  Badge,
+} from 'react-bootstrap'
 
 const ROLES = [
   { value: 'admin', label: 'Admin' },
@@ -14,7 +23,7 @@ export default function AdminUsers() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-  const [showForm, setShowForm] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'sales' })
 
@@ -32,7 +41,7 @@ export default function AdminUsers() {
   const openAdd = () => {
     setEditingId(null)
     setForm({ name: '', email: '', password: '', role: 'sales' })
-    setShowForm(true)
+    setShowModal(true)
     setError('')
     setSuccess('')
   }
@@ -40,13 +49,13 @@ export default function AdminUsers() {
   const openEdit = (u) => {
     setEditingId(u._id)
     setForm({ name: u.name, email: u.email, password: '', role: u.role })
-    setShowForm(true)
+    setShowModal(true)
     setError('')
     setSuccess('')
   }
 
-  const closeForm = () => {
-    setShowForm(false)
+  const closeModal = () => {
+    setShowModal(false)
     setEditingId(null)
     setForm({ name: '', email: '', password: '', role: 'sales' })
   }
@@ -74,7 +83,7 @@ export default function AdminUsers() {
         setSuccess('User created.')
       }
       loadUsers()
-      closeForm()
+      closeModal()
     } catch (err) {
       setError(err.message)
     }
@@ -92,120 +101,125 @@ export default function AdminUsers() {
   }
 
   return (
-    <div className="page">
-      <h1>User Management</h1>
-      {error && <div className="error-msg">{error}</div>}
-      {success && <div className="success-msg">{success}</div>}
-      <div className="page-actions">
-        <button type="button" className="btn btn-primary" onClick={openAdd}>
+    <>
+      <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
+        <h1 className="h4 mb-0 fw-semibold">User Management</h1>
+        <Button variant="primary" size="sm" onClick={openAdd}>
           Add User
-        </button>
+        </Button>
       </div>
 
-      {showForm && (
-        <div className="modal-overlay" onClick={closeForm}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h2>{editingId ? 'Edit User' : 'Add User'}</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="form-row">
-                <label>Name</label>
-                <input
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="form-row">
-                <label>Email</label>
-                <input
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  required
-                  disabled={!!editingId}
-                />
-                {editingId && <small style={{ color: '#666' }}>Email cannot be changed.</small>}
-              </div>
-              <div className="form-row">
-                <label>Password {editingId && '(leave blank to keep current)'}</label>
-                <input
-                  type="password"
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  minLength={editingId ? 0 : 6}
-                  required={!editingId}
-                />
-              </div>
-              <div className="form-row">
-                <label>Role</label>
-                <select
-                  value={form.role}
-                  onChange={(e) => setForm({ ...form, role: e.target.value })}
-                >
-                  {ROLES.map((r) => (
-                    <option key={r.value} value={r.value}>
-                      {r.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="form-actions">
-                <button type="submit" className="btn btn-primary">
-                  {editingId ? 'Update' : 'Create'}
-                </button>
-                <button type="button" className="btn btn-secondary" onClick={closeForm}>
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {error && <Alert variant="danger" dismissible onClose={() => setError('')}>{error}</Alert>}
+      {success && <Alert variant="success" dismissible onClose={() => setSuccess('')}>{success}</Alert>}
 
-      <div className="table-wrap">
+      <Card className="border-0 shadow-sm">
         {loading ? (
-          <p className="empty-msg">Loading...</p>
+          <Card.Body className="text-center py-5">
+            <Spinner animation="border" size="sm" />
+            <span className="ms-2">Loading users...</span>
+          </Card.Body>
         ) : users.length === 0 ? (
-          <p className="empty-msg">No users yet. Add one above.</p>
+          <Card.Body className="text-center text-muted py-5">
+            No users yet. Click &quot;Add User&quot; to create one.
+          </Card.Body>
         ) : (
-          <table className="data-table">
-            <thead>
+          <Table responsive hover className="mb-0">
+            <thead className="table-light">
               <tr>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Role</th>
-                <th>Actions</th>
+                <th className="text-end">Actions</th>
               </tr>
             </thead>
             <tbody>
               {users.map((u) => (
                 <tr key={u._id}>
                   <td>{u.name}</td>
-                  <td>{u.email}</td>
-                  <td>{u.role}</td>
+                  <td className="text-muted">{u.email}</td>
                   <td>
-                    <button
-                      type="button"
-                      className="btn btn-secondary btn-sm"
-                      onClick={() => openEdit(u)}
-                    >
+                    <Badge bg="secondary" className="text-uppercase">
+                      {u.role}
+                    </Badge>
+                  </td>
+                  <td className="text-end">
+                    <Button variant="outline-secondary" size="sm" className="me-1" onClick={() => openEdit(u)}>
                       Edit
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-danger btn-sm"
-                      onClick={() => handleDelete(u._id, u.name)}
-                      style={{ marginLeft: '0.5rem' }}
-                    >
+                    </Button>
+                    <Button variant="outline-danger" size="sm" onClick={() => handleDelete(u._id, u.name)}>
                       Delete
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}
             </tbody>
-          </table>
+          </Table>
         )}
-      </div>
-    </div>
+      </Card>
+
+      <Modal show={showModal} onHide={closeModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>{editingId ? 'Edit User' : 'Add User'}</Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleSubmit}>
+          <Modal.Body>
+            {error && <Alert variant="danger" className="py-2 small">{error}</Alert>}
+            <Form.Group className="mb-3">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                required
+                placeholder="Full name"
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                required
+                disabled={!!editingId}
+                placeholder="you@example.com"
+              />
+              {editingId && <Form.Text className="text-muted">Email cannot be changed.</Form.Text>}
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Password {editingId && '(leave blank to keep current)'}</Form.Label>
+              <Form.Control
+                type="password"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                minLength={editingId ? 0 : 6}
+                required={!editingId}
+                placeholder={editingId ? '••••••••' : 'Min. 6 characters'}
+              />
+            </Form.Group>
+            <Form.Group className="mb-0">
+              <Form.Label>Role</Form.Label>
+              <Form.Select
+                value={form.role}
+                onChange={(e) => setForm({ ...form, role: e.target.value })}
+              >
+                {ROLES.map((r) => (
+                  <option key={r.value} value={r.value}>
+                    {r.label}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={closeModal}>
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit">
+              {editingId ? 'Update' : 'Create'}
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+    </>
   )
 }

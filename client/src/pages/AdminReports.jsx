@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { api } from '../api'
-import './Page.css'
+import { Card, Table, Nav, Spinner, Alert } from 'react-bootstrap'
 
 export default function AdminReports() {
   const [sales, setSales] = useState([])
@@ -20,43 +20,56 @@ export default function AdminReports() {
       .finally(() => setLoading(false))
   }, [])
 
-  if (error) return <div className="page error-msg">{error}</div>
+  if (error) return <Alert variant="danger">{error}</Alert>
 
   const totalSalesAmount = sales.reduce((sum, s) => sum + (s.totalAmount || 0), 0)
 
   return (
-    <div className="page">
-      <h1>Reports</h1>
-      <div className="page-actions" style={{ marginBottom: '1rem' }}>
-        <button
-          type="button"
-          className={`btn ${activeTab === 'sales' ? 'btn-primary' : 'btn-secondary'}`}
-          onClick={() => setActiveTab('sales')}
-        >
-          Sales Summary
-        </button>
-        <button
-          type="button"
-          className={`btn ${activeTab === 'restock' ? 'btn-primary' : 'btn-secondary'}`}
-          onClick={() => setActiveTab('restock')}
-        >
-          Restock History
-        </button>
-      </div>
+    <>
+      <h1 className="h4 mb-4 fw-semibold">Reports</h1>
+
+      <Nav variant="tabs" className="mb-4">
+        <Nav.Item>
+          <Nav.Link
+            active={activeTab === 'sales'}
+            onClick={() => setActiveTab('sales')}
+            role="button"
+          >
+            Sales Summary
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link
+            active={activeTab === 'restock'}
+            onClick={() => setActiveTab('restock')}
+            role="button"
+          >
+            Restock History
+          </Nav.Link>
+        </Nav.Item>
+      </Nav>
 
       {loading ? (
-        <p className="empty-msg">Loading...</p>
+        <div className="d-flex justify-content-center py-5">
+          <Spinner animation="border" variant="primary" />
+          <span className="ms-2">Loading...</span>
+        </div>
       ) : activeTab === 'sales' ? (
         <>
-          <p style={{ marginBottom: '1rem' }}>
-            <strong>Total sales amount (all time):</strong> ₹{totalSalesAmount.toFixed(2)}
-          </p>
-          <div className="table-wrap">
+          <Card className="border-0 shadow-sm mb-4">
+            <Card.Body className="py-3">
+              <span className="text-muted">Total sales (all time):</span>{' '}
+              <strong className="text-success fs-5">₹{totalSalesAmount.toFixed(2)}</strong>
+            </Card.Body>
+          </Card>
+          <Card className="border-0 shadow-sm">
             {sales.length === 0 ? (
-              <p className="empty-msg">No sales recorded.</p>
+              <Card.Body className="text-center text-muted py-5">
+                No sales recorded.
+              </Card.Body>
             ) : (
-              <table className="data-table">
-                <thead>
+              <Table responsive hover className="mb-0">
+                <thead className="table-light">
                   <tr>
                     <th>Product</th>
                     <th>Qty</th>
@@ -71,22 +84,26 @@ export default function AdminReports() {
                       <td>{s.productId?.productName || '—'}</td>
                       <td>{s.quantitySold}</td>
                       <td>₹{Number(s.totalAmount).toFixed(2)}</td>
-                      <td>{s.soldBy?.name || '—'}</td>
-                      <td>{s.createdAt ? new Date(s.createdAt).toLocaleString() : '—'}</td>
+                      <td className="text-muted">{s.soldBy?.name || '—'}</td>
+                      <td className="text-muted small">
+                        {s.createdAt ? new Date(s.createdAt).toLocaleString() : '—'}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </Table>
             )}
-          </div>
+          </Card>
         </>
       ) : (
-        <div className="table-wrap">
+        <Card className="border-0 shadow-sm">
           {restocks.length === 0 ? (
-            <p className="empty-msg">No restock entries.</p>
+            <Card.Body className="text-center text-muted py-5">
+              No restock entries.
+            </Card.Body>
           ) : (
-            <table className="data-table">
-              <thead>
+            <Table responsive hover className="mb-0">
+              <thead className="table-light">
                 <tr>
                   <th>Product</th>
                   <th>Supplier</th>
@@ -100,14 +117,16 @@ export default function AdminReports() {
                     <td>{r.productId?.productName || '—'}</td>
                     <td>{r.supplierId?.supplierName || '—'}</td>
                     <td>{r.quantityAdded}</td>
-                    <td>{r.createdAt ? new Date(r.createdAt).toLocaleString() : '—'}</td>
+                    <td className="text-muted small">
+                      {r.createdAt ? new Date(r.createdAt).toLocaleString() : '—'}
+                    </td>
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </Table>
           )}
-        </div>
+        </Card>
       )}
-    </div>
+    </>
   )
 }

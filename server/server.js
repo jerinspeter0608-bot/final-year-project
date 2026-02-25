@@ -9,6 +9,7 @@ const supplierRoutes = require('./routes/suppliers');
 const restockRoutes = require('./routes/restock');
 const userRoutes = require('./routes/users');
 const dashboardRoutes = require('./routes/dashboard');
+const requestRoutes = require('./routes/requests');
 
 connectDB();
 
@@ -29,6 +30,7 @@ app.use('/api/suppliers', supplierRoutes);
 app.use('/api/restock', restockRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/requests', requestRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

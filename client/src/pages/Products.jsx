@@ -1,13 +1,24 @@
 import { useState, useEffect } from 'react'
 import { api } from '../api'
-import './Page.css'
+import {
+  Card,
+  Table,
+  Button,
+  Modal,
+  Form,
+  Alert,
+  Spinner,
+  Badge,
+  Row,
+  Col,
+} from 'react-bootstrap'
 
 export default function Products() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-  const [showForm, setShowForm] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState({
     productName: '',
@@ -15,7 +26,7 @@ export default function Products() {
     category: '',
     price: '',
     quantity: '',
-    minThreshold: '',
+    minThreshold: '0',
   })
 
   const loadProducts = () => {
@@ -39,7 +50,7 @@ export default function Products() {
       quantity: '',
       minThreshold: '0',
     })
-    setShowForm(true)
+    setShowModal(true)
     setError('')
     setSuccess('')
   }
@@ -54,13 +65,13 @@ export default function Products() {
       quantity: String(p.quantity),
       minThreshold: String(p.minThreshold ?? 0),
     })
-    setShowForm(true)
+    setShowModal(true)
     setError('')
     setSuccess('')
   }
 
-  const closeForm = () => {
-    setShowForm(false)
+  const closeModal = () => {
+    setShowModal(false)
     setEditingId(null)
   }
 
@@ -85,7 +96,7 @@ export default function Products() {
         setSuccess('Product added.')
       }
       loadProducts()
-      closeForm()
+      closeModal()
     } catch (err) {
       setError(err.message)
     }
@@ -102,143 +113,174 @@ export default function Products() {
     }
   }
 
-  const isLowStock = (p) => p.quantity < (p.minThreshold ?? 0)
+  const isLowStock = (p) => p.quantity < (p.minThreshold ?? 0) && p.quantity > 0
   const isOutOfStock = (p) => p.quantity === 0
 
+  const getStatusBadge = (p) => {
+    if (isOutOfStock(p)) return <Badge bg="danger">Out of stock</Badge>
+    if (isLowStock(p)) return <Badge bg="warning" text="dark">Low stock</Badge>
+    return <Badge bg="success">OK</Badge>
+  }
+
+  const getQuantityClass = (p) => {
+    if (isOutOfStock(p)) return 'text-danger fw-bold'
+    if (isLowStock(p)) return 'text-warning fw-semibold'
+    return ''
+  }
+
   return (
-    <div className="page">
-      <h1>Products</h1>
-      {error && <div className="error-msg">{error}</div>}
-      {success && <div className="success-msg">{success}</div>}
-      <div className="page-actions">
-        <button type="button" className="btn btn-primary" onClick={openAdd}>
+    <>
+      <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
+        <h1 className="h4 mb-0 fw-semibold">Products</h1>
+        <Button variant="primary" size="sm" onClick={openAdd}>
           Add Product
-        </button>
+        </Button>
       </div>
 
-      {showForm && (
-        <div className="modal-overlay" onClick={closeForm}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h2>{editingId ? 'Edit Product' : 'Add Product'}</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="form-row">
-                <label>Product Name</label>
-                <input
-                  value={form.productName}
-                  onChange={(e) => setForm({ ...form, productName: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="form-row">
-                <label>Description</label>
-                <input
-                  value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
-                />
-              </div>
-              <div className="form-row">
-                <label>Category</label>
-                <input
-                  value={form.category}
-                  onChange={(e) => setForm({ ...form, category: e.target.value })}
-                />
-              </div>
-              <div className="form-row">
-                <label>Price (₹)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={form.price}
-                  onChange={(e) => setForm({ ...form, price: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="form-row">
-                <label>Quantity</label>
-                <input
-                  type="number"
-                  min="0"
-                  value={form.quantity}
-                  onChange={(e) => setForm({ ...form, quantity: e.target.value })}
-                />
-              </div>
-              <div className="form-row">
-                <label>Min Threshold (low-stock alert)</label>
-                <input
-                  type="number"
-                  min="0"
-                  value={form.minThreshold}
-                  onChange={(e) => setForm({ ...form, minThreshold: e.target.value })}
-                />
-              </div>
-              <div className="form-actions">
-                <button type="submit" className="btn btn-primary">
-                  {editingId ? 'Update' : 'Add'}
-                </button>
-                <button type="button" className="btn btn-secondary" onClick={closeForm}>
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {error && <Alert variant="danger" dismissible onClose={() => setError('')}>{error}</Alert>}
+      {success && <Alert variant="success" dismissible onClose={() => setSuccess('')}>{success}</Alert>}
 
-      <div className="table-wrap">
+      <Card className="border-0 shadow-sm">
         {loading ? (
-          <p className="empty-msg">Loading...</p>
+          <Card.Body className="text-center py-5">
+            <Spinner animation="border" size="sm" />
+            <span className="ms-2">Loading products...</span>
+          </Card.Body>
         ) : products.length === 0 ? (
-          <p className="empty-msg">No products. Add one above.</p>
+          <Card.Body className="text-center text-muted py-5">
+            No products yet. Click &quot;Add Product&quot; to create one.
+          </Card.Body>
         ) : (
-          <table className="data-table">
-            <thead>
+          <Table responsive hover className="mb-0">
+            <thead className="table-light">
               <tr>
                 <th>Name</th>
                 <th>Category</th>
                 <th>Price</th>
                 <th>Quantity</th>
-                <th>Min Threshold</th>
+                <th>Min threshold</th>
                 <th>Status</th>
-                <th>Actions</th>
+                <th className="text-end">Actions</th>
               </tr>
             </thead>
             <tbody>
               {products.map((p) => (
                 <tr key={p._id}>
-                  <td>{p.productName}</td>
-                  <td>{p.category || '—'}</td>
+                  <td>
+                    <span className="fw-medium">{p.productName}</span>
+                    {p.description && (
+                      <div className="small text-muted">{p.description}</div>
+                    )}
+                  </td>
+                  <td className="text-muted">{p.category || '—'}</td>
                   <td>₹{Number(p.price).toFixed(2)}</td>
-                  <td className={isOutOfStock(p) ? 'out-of-stock' : isLowStock(p) ? 'low-stock' : ''}>
-                    {p.quantity}
-                  </td>
+                  <td className={getQuantityClass(p)}>{p.quantity}</td>
                   <td>{p.minThreshold ?? 0}</td>
-                  <td>
-                    {isOutOfStock(p) ? 'Out of stock' : isLowStock(p) ? 'Low stock' : 'OK'}
-                  </td>
-                  <td>
-                    <button
-                      type="button"
-                      className="btn btn-secondary btn-sm"
-                      onClick={() => openEdit(p)}
-                    >
+                  <td>{getStatusBadge(p)}</td>
+                  <td className="text-end">
+                    <Button variant="outline-secondary" size="sm" className="me-1" onClick={() => openEdit(p)}>
                       Edit
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-danger btn-sm"
-                      onClick={() => handleDelete(p._id, p.productName)}
-                      style={{ marginLeft: '0.5rem' }}
-                    >
+                    </Button>
+                    <Button variant="outline-danger" size="sm" onClick={() => handleDelete(p._id, p.productName)}>
                       Delete
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}
             </tbody>
-          </table>
+          </Table>
         )}
-      </div>
-    </div>
+      </Card>
+
+      <Modal show={showModal} onHide={closeModal} centered size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>{editingId ? 'Edit Product' : 'Add Product'}</Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleSubmit}>
+          <Modal.Body>
+            {error && <Alert variant="danger" className="py-2 small">{error}</Alert>}
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Product name</Form.Label>
+                  <Form.Control
+                    value={form.productName}
+                    onChange={(e) => setForm({ ...form, productName: e.target.value })}
+                    required
+                    placeholder="e.g. Rice (1kg)"
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Category</Form.Label>
+                  <Form.Control
+                    value={form.category}
+                    onChange={(e) => setForm({ ...form, category: e.target.value })}
+                    placeholder="e.g. Groceries"
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Form.Group className="mb-3">
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={2}
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                placeholder="Optional"
+              />
+            </Form.Group>
+            <Row>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Price (₹)</Form.Label>
+                  <Form.Control
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={form.price}
+                    onChange={(e) => setForm({ ...form, price: e.target.value })}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Quantity</Form.Label>
+                  <Form.Control
+                    type="number"
+                    min="0"
+                    value={form.quantity}
+                    onChange={(e) => setForm({ ...form, quantity: e.target.value })}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Min threshold</Form.Label>
+                  <Form.Control
+                    type="number"
+                    min="0"
+                    value={form.minThreshold}
+                    onChange={(e) => setForm({ ...form, minThreshold: e.target.value })}
+                    title="Low-stock alert when quantity falls below this"
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={closeModal}>
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit">
+              {editingId ? 'Update' : 'Add'}
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+    </>
   )
 }

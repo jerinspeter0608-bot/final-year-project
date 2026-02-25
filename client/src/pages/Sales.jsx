@@ -1,6 +1,15 @@
 import { useState, useEffect } from 'react'
 import { api } from '../api'
-import './Page.css'
+import {
+  Card,
+  Row,
+  Col,
+  Form,
+  Button,
+  Table,
+  Alert,
+  Spinner,
+} from 'react-bootstrap'
 
 export default function Sales() {
   const [products, setProducts] = useState([])
@@ -71,107 +80,139 @@ export default function Sales() {
     ? (Number(product.price) * Number(quantitySold || 0)).toFixed(2)
     : '0.00'
 
+  const inStockProducts = products.filter((p) => p.quantity > 0)
+
   return (
-    <div className="page">
-      <h1>Sales</h1>
-      {error && <div className="error-msg">{error}</div>}
-      {success && <div className="success-msg">{success}</div>}
+    <>
+      <h1 className="h4 mb-4 fw-semibold">Sales</h1>
+      {error && <Alert variant="danger" dismissible onClose={() => setError('')}>{error}</Alert>}
+      {success && <Alert variant="success" dismissible onClose={() => setSuccess('')}>{success}</Alert>}
 
-      <div className="form-card">
-        <h2>Record Sale</h2>
-        <form onSubmit={handleRecordSale}>
-          <div className="form-row">
-            <label>Product</label>
-            <select
-              value={productId}
-              onChange={(e) => setProductId(e.target.value)}
-              required
-            >
-              <option value="">Select product</option>
-              {products
-                .filter((p) => p.quantity > 0)
-                .map((p) => (
-                  <option key={p._id} value={p._id}>
-                    {p.productName} — ₹{Number(p.price).toFixed(2)} (Stock: {p.quantity})
-                  </option>
-                ))}
-            </select>
-          </div>
-          <div className="form-row">
-            <label>Quantity</label>
-            <input
-              type="number"
-              min="1"
-              value={quantitySold}
-              onChange={(e) => setQuantitySold(e.target.value)}
-              required
-            />
-          </div>
-          {productId && (
-            <p style={{ margin: '0 0 1rem', color: '#666' }}>
-              Total: <strong>₹{totalAmount}</strong>
-            </p>
+      <Row>
+        <Col lg={5} className="mb-4">
+          <Card className="border-0 shadow-sm h-100">
+            <Card.Header className="bg-white border-bottom py-3">
+              <Card.Title as="h6" className="mb-0 fw-semibold">
+                Record Sale
+              </Card.Title>
+            </Card.Header>
+            <Card.Body>
+              <Form onSubmit={handleRecordSale}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Product</Form.Label>
+                  <Form.Select
+                    value={productId}
+                    onChange={(e) => setProductId(e.target.value)}
+                    required
+                  >
+                    <option value="">Select product</option>
+                    {inStockProducts.map((p) => (
+                      <option key={p._id} value={p._id}>
+                        {p.productName} — ₹{Number(p.price).toFixed(2)} (Stock: {p.quantity})
+                      </option>
+                    ))}
+                  </Form.Select>
+                  {inStockProducts.length === 0 && products.length > 0 && (
+                    <Form.Text className="text-warning">No products in stock.</Form.Text>
+                  )}
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Quantity</Form.Label>
+                  <Form.Control
+                    type="number"
+                    min={1}
+                    value={quantitySold}
+                    onChange={(e) => setQuantitySold(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+                {productId && (
+                  <div className="mb-3 p-2 rounded bg-light">
+                    <span className="text-muted small">Total: </span>
+                    <strong className="text-success fs-5">₹{totalAmount}</strong>
+                  </div>
+                )}
+                <Button
+                  type="submit"
+                  variant="primary"
+                  className="w-100"
+                  disabled={submitting || inStockProducts.length === 0}
+                >
+                  {submitting ? 'Recording...' : 'Record Sale'}
+                </Button>
+              </Form>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col lg={7}>
+          {lastSale && (
+            <Card className="border-0 shadow-sm mb-4 border-start border-primary border-3">
+              <Card.Body className="py-3">
+                <Card.Title as="h6" className="text-muted small text-uppercase mb-2">
+                  Last bill
+                </Card.Title>
+                <p className="mb-1 fw-medium">
+                  {lastSale.productId?.productName} × {lastSale.quantitySold} = ₹
+                  {Number(lastSale.totalAmount).toFixed(2)}
+                </p>
+                <p className="mb-0 small text-muted">
+                  Sold by: {lastSale.soldBy?.name}
+                </p>
+              </Card.Body>
+            </Card>
           )}
-          <div className="form-actions">
-            <button type="submit" className="btn btn-primary" disabled={submitting}>
-              {submitting ? 'Recording...' : 'Record Sale'}
-            </button>
-          </div>
-        </form>
-      </div>
 
-      {lastSale && (
-        <div className="card" style={{ marginBottom: '1.5rem', padding: '1rem' }}>
-          <h3 style={{ margin: '0 0 0.5rem' }}>Last Bill</h3>
-          <p style={{ margin: 0 }}>
-            {lastSale.productId?.productName} × {lastSale.quantitySold} = ₹
-            {Number(lastSale.totalAmount).toFixed(2)}
-          </p>
-          <p style={{ margin: '0.25rem 0 0', fontSize: '0.9rem', color: '#666' }}>
-            Sold by: {lastSale.soldBy?.name}
-          </p>
-        </div>
-      )}
-
-      <h2 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Sales History</h2>
-      <div className="form-row" style={{ maxWidth: 200, marginBottom: '1rem' }}>
-        <label>Date</label>
-        <input
-          type="date"
-          value={dateFilter}
-          onChange={(e) => setDateFilter(e.target.value)}
-        />
-      </div>
-      <div className="table-wrap">
-        {loading ? (
-          <p className="empty-msg">Loading...</p>
-        ) : sales.length === 0 ? (
-          <p className="empty-msg">No sales for this date.</p>
-        ) : (
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th>Qty</th>
-                <th>Amount</th>
-                <th>Sold By</th>
-                <th>Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sales.map((s) => (
-                <tr key={s._id}>
-                  <td>{s.productId?.productName || '—'}</td>
-                  <td>{s.quantitySold}</td>
-                  <td>₹{Number(s.totalAmount).toFixed(2)}</td>
-                  <td>{s.soldBy?.name || '—'}</td>
-                  <td>{s.createdAt ? new Date(s.createdAt).toLocaleString() : '—'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-    </div>
+          <Card className="border-0 shadow-sm">
+            <Card.Header className="bg-white border-bottom py-3 d-flex flex-wrap align-items-center gap-2">
+              <Card.Title as="h6" className="mb-0 fw-semibold">
+                Sales history
+              </Card.Title>
+              <Form.Control
+                type="date"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+                className="ms-auto"
+                style={{ maxWidth: '10rem' }}
+              />
+            </Card.Header>
+            {loading ? (
+              <Card.Body className="text-center py-5">
+                <Spinner animation="border" size="sm" />
+                <span className="ms-2">Loading...</span>
+              </Card.Body>
+            ) : sales.length === 0 ? (
+              <Card.Body className="text-center text-muted py-5">
+                No sales for this date.
+              </Card.Body>
+            ) : (
+              <Table responsive hover className="mb-0">
+                <thead className="table-light">
+                  <tr>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Amount</th>
+                    <th>Sold by</th>
+                    <th>Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sales.map((s) => (
+                    <tr key={s._id}>
+                      <td>{s.productId?.productName || '—'}</td>
+                      <td>{s.quantitySold}</td>
+                      <td>₹{Number(s.totalAmount).toFixed(2)}</td>
+                      <td className="text-muted">{s.soldBy?.name || '—'}</td>
+                      <td className="text-muted small">
+                        {s.createdAt ? new Date(s.createdAt).toLocaleString() : '—'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            )}
+          </Card>
+        </Col>
+      </Row>
+    </>
   )
 }

@@ -1,82 +1,54 @@
-.layout {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+/* Navbar – dark, minimal */
+.app-navbar {
+  background-color: var(--app-navbar-bg) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
-.layout-nav {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 0.75rem 1.5rem;
-  background: #1976d2;
-  color: #fff;
-  flex-wrap: wrap;
+.app-navbar .navbar-brand {
+  color: var(--app-navbar-text) !important;
+  font-size: 1.15rem;
 }
 
-.layout-brand {
-  font-weight: 700;
-  font-size: 1.25rem;
-  color: #fff;
-  text-decoration: none;
-  margin-right: 0.5rem;
+.app-navbar .navbar-brand:hover {
+  color: #fff !important;
 }
 
-.layout-brand:hover {
-  color: #e3f2fd;
-}
-
-.layout-links {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex: 1;
-}
-
-.layout-links a {
-  color: #fff;
-  text-decoration: none;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  font-size: 0.95rem;
-}
-
-.layout-links a:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.layout-links a.active {
-  background: rgba(255, 255, 255, 0.25);
-  font-weight: 600;
-}
-
-.layout-user {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.layout-role {
+.app-navbar .nav-link {
+  color: var(--app-navbar-text) !important;
   font-size: 0.9rem;
-  opacity: 0.95;
-}
-
-.layout-logout {
-  padding: 0.4rem 0.75rem;
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 0.5rem 0.75rem !important;
   border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
 }
 
-.layout-logout:hover {
-  background: rgba(255, 255, 255, 0.3);
+.app-navbar .nav-link:hover {
+  background-color: var(--app-navbar-hover);
+  color: #fff !important;
 }
 
-.layout-main {
-  flex: 1;
-  padding: 1.5rem;
-  background: #f5f5f5;
+.app-navbar .nav-link.active {
+  background-color: var(--app-navbar-active);
+  color: #fff !important;
+  font-weight: 500;
+}
+
+.app-navbar .navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.3);
+  padding: 0.35rem 0.5rem;
+}
+
+.app-navbar .navbar-toggler-icon {
+  filter: invert(1);
+}
+
+.app-navbar .dropdown-toggle::after {
+  margin-left: 0.35rem;
+}
+
+/* Admin "More" dropdown – match nav link style */
+.app-navbar .dropdown .dropdown-toggle.nav-link {
+  color: var(--app-navbar-text) !important;
+}
+.app-navbar .dropdown .dropdown-toggle.nav-link:hover,
+.app-navbar .dropdown .dropdown-toggle.nav-link:focus {
+  color: #fff !important;
 }

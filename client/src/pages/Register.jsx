@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { Card, Form, Button, Alert } from 'react-bootstrap'
 import './Auth.css'
 
 const ROLES = [
@@ -40,59 +41,78 @@ export default function Register() {
 
   return (
     <div className="auth-page">
-      <div className="auth-card">
-        <h1>Inventory Monitor</h1>
-        <h2>Register</h2>
-        <form onSubmit={handleSubmit}>
-          {error && <div className="auth-error">{error}</div>}
-          <label>
-            Name
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              autoComplete="name"
-            />
-          </label>
-          <label>
-            Email
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-            />
-          </label>
-          <label>
-            Password
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              autoComplete="new-password"
-            />
-          </label>
-          <label>
-            Role
-            <select value={role} onChange={(e) => setRole(e.target.value)}>
-              {ROLES.map((r) => (
-                <option key={r.value} value={r.value}>
-                  {r.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <button type="submit" disabled={loading}>
-            {loading ? 'Registering...' : 'Register'}
-          </button>
-        </form>
-        <p className="auth-switch">
-          Already have an account? <Link to="/login">Login</Link>
-        </p>
+      <div className="auth-card-wrap">
+        <Card>
+          <Card.Body className="p-4">
+            <Card.Title>Inventory Monitor</Card.Title>
+            <Card.Text className="card-subtitle">Create a new account</Card.Text>
+            <Form onSubmit={handleSubmit}>
+              {error && (
+                <Alert variant="danger" className="py-2 small mb-3">
+                  {error}
+                </Alert>
+              )}
+              <Form.Group className="mb-3" controlId="reg-name">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  autoComplete="name"
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="reg-email">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  autoComplete="email"
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="reg-password">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Min. 6 characters"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  autoComplete="new-password"
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="reg-role">
+                <Form.Label>Role</Form.Label>
+                <Form.Select
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                >
+                  {ROLES.map((r) => (
+                    <option key={r.value} value={r.value}>
+                      {r.label}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+              <Button
+                type="submit"
+                variant="primary"
+                className="w-100"
+                disabled={loading}
+              >
+                {loading ? 'Creating account...' : 'Create account'}
+              </Button>
+            </Form>
+            <p className="auth-switch mb-0">
+              Already have an account? <Link to="/login">Sign in</Link>
+            </p>
+          </Card.Body>
+        </Card>
       </div>
     </div>
   )

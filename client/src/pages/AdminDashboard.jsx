@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { api } from '../api'
-import './Page.css'
+import { Card, Row, Col, Spinner, Alert } from 'react-bootstrap'
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null)
@@ -14,39 +14,47 @@ export default function AdminDashboard() {
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <div className="page">Loading dashboard...</div>
-  if (error) return <div className="page error-msg">{error}</div>
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center py-5">
+        <Spinner animation="border" variant="primary" />
+        <span className="ms-2">Loading dashboard...</span>
+      </div>
+    )
+  }
+
+  if (error) {
+    return <Alert variant="danger">{error}</Alert>
+  }
+
   if (!stats) return null
 
+  const statCards = [
+    { label: 'Total Products', value: stats.totalProducts, variant: 'primary' },
+    { label: 'Low Stock Items', value: stats.lowStockCount, variant: 'warning' },
+    { label: 'Out of Stock', value: stats.outOfStockCount, variant: 'danger' },
+    { label: "Today's Sales (count)", value: stats.todaySalesCount, variant: 'info' },
+    { label: "Today's Sales (amount)", value: `₹${Number(stats.todaySalesTotal).toFixed(2)}`, variant: 'success' },
+    { label: 'Total Sales Amount', value: `₹${Number(stats.totalSalesAmount).toFixed(2)}`, variant: 'dark' },
+  ]
+
   return (
-    <div className="page">
-      <h1>Admin Dashboard</h1>
-      <div className="cards-grid">
-        <div className="card">
-          <p className="card-title">Total Products</p>
-          <p className="card-value">{stats.totalProducts}</p>
-        </div>
-        <div className="card">
-          <p className="card-title">Low Stock Items</p>
-          <p className="card-value">{stats.lowStockCount}</p>
-        </div>
-        <div className="card">
-          <p className="card-title">Out of Stock</p>
-          <p className="card-value">{stats.outOfStockCount}</p>
-        </div>
-        <div className="card">
-          <p className="card-title">Today&apos;s Sales (count)</p>
-          <p className="card-value">{stats.todaySalesCount}</p>
-        </div>
-        <div className="card">
-          <p className="card-title">Today&apos;s Sales (amount)</p>
-          <p className="card-value">₹{Number(stats.todaySalesTotal).toFixed(2)}</p>
-        </div>
-        <div className="card">
-          <p className="card-title">Total Sales Amount</p>
-          <p className="card-value">₹{Number(stats.totalSalesAmount).toFixed(2)}</p>
-        </div>
-      </div>
-    </div>
+    <>
+      <h1 className="h4 mb-4 fw-semibold">Admin Dashboard</h1>
+      <Row xs={1} sm={2} lg={3} className="g-3">
+        {statCards.map(({ label, value, variant }) => (
+          <Col key={label}>
+            <Card className="border-0 shadow-sm h-100">
+              <Card.Body>
+                <Card.Text className="text-muted small mb-1">{label}</Card.Text>
+                <Card.Title as="div" className={`mb-0 text-${variant} fs-4 fw-bold`}>
+                  {value}
+                </Card.Title>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    </>
   )
 }
