@@ -23,7 +23,7 @@ export default function Layout() {
       <Navbar
         expand="md"
         className="app-navbar"
-        variant="dark"
+        variant="light"
       >
         <Container>
           <Navbar.Brand as={NavLink} to="/" className="fw-semibold">
@@ -104,7 +104,7 @@ export default function Layout() {
               <Dropdown.Toggle
                 variant="outline-light"
                 size="sm"
-                className="d-flex align-items-center gap-2 border-0 bg-transparent text-white opacity-90"
+                className="d-flex align-items-center gap-2 border-0 bg-transparent opacity-90"
                 id="user-dropdown"
               >
                 <span className="d-none d-sm-inline">{user?.name}</span>

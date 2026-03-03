@@ -1,73 +1,77 @@
-/* Auth pages – centered card, minimal */
+/* Auth pages – warm jewellery card */
 .auth-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
-  background: linear-gradient(145deg, #f0f2f5 0%, #e4e6e9 100%);
+  background: linear-gradient(145deg, #faf3eb 0%, #f0e2d0 50%, #ede7f6 100%);
 }
 
 .auth-card-wrap {
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
 }
 
 .auth-card-wrap .card {
   border: none;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-radius: var(--app-card-radius, 16px);
+  box-shadow: 0 8px 32px rgba(92, 64, 51, 0.1);
+  background: var(--app-surface, #fff8f2);
 }
 
 .auth-card-wrap .card-title {
   font-size: 1.5rem;
-  font-weight: 600;
-  color: #1a1d21;
+  font-weight: 700;
+  color: var(--app-text, #3d2e1f);
   margin-bottom: 0.25rem;
 }
 
 .auth-card-wrap .card-subtitle {
   font-size: 0.9rem;
-  color: #6c757d;
+  color: var(--app-text-muted, #8c7a6b);
   margin-bottom: 1.5rem;
 }
 
 .auth-card-wrap .form-label {
   font-weight: 500;
-  color: #374151;
+  color: var(--app-text, #3d2e1f);
 }
 
 .auth-card-wrap .form-control,
 .auth-card-wrap .form-select {
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 0.6rem 0.75rem;
+  border-color: var(--app-border, #ebe0d3);
+  background: #fffbf7;
 }
 
 .auth-card-wrap .form-control:focus,
 .auth-card-wrap .form-select:focus {
-  border-color: var(--app-accent, #0d6efd);
-  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+  border-color: var(--app-accent, #c4943e);
+  box-shadow: 0 0 0 3px rgba(196, 148, 62, 0.18);
 }
 
 .auth-card-wrap .btn-primary {
   padding: 0.6rem 1rem;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 .auth-switch {
   margin-top: 1.25rem;
   text-align: center;
   font-size: 0.9rem;
-  color: #6c757d;
+  color: var(--app-text-muted, #8c7a6b);
 }
 
 .auth-switch a {
-  color: var(--app-accent, #0d6efd);
+  color: var(--app-accent, #c4943e);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .auth-switch a:hover {
   text-decoration: underline;
+  color: var(--app-accent-hover, #a87c32);
 }

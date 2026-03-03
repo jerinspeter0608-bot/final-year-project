@@ -30,24 +30,24 @@ export default function AdminDashboard() {
   if (!stats) return null
 
   const statCards = [
-    { label: 'Total Products', value: stats.totalProducts, variant: 'primary' },
-    { label: 'Low Stock Items', value: stats.lowStockCount, variant: 'warning' },
-    { label: 'Out of Stock', value: stats.outOfStockCount, variant: 'danger' },
-    { label: "Today's Sales (count)", value: stats.todaySalesCount, variant: 'info' },
-    { label: "Today's Sales (amount)", value: `₹${Number(stats.todaySalesTotal).toFixed(2)}`, variant: 'success' },
-    { label: 'Total Sales Amount', value: `₹${Number(stats.totalSalesAmount).toFixed(2)}`, variant: 'dark' },
+    { label: 'Total Products', value: stats.totalProducts, gradient: 'card--lavender' },
+    { label: 'Low Stock Items', value: stats.lowStockCount, gradient: 'card--peach' },
+    { label: 'Out of Stock', value: stats.outOfStockCount, gradient: 'card--pink' },
+    { label: "Today's Sales (count)", value: stats.todaySalesCount, gradient: 'card--sky' },
+    { label: "Today's Sales (amount)", value: `₹${Number(stats.todaySalesTotal).toFixed(2)}`, gradient: 'card--mint' },
+    { label: 'Total Sales Amount', value: `₹${Number(stats.totalSalesAmount).toFixed(2)}`, gradient: 'card--rose' },
   ]
 
   return (
     <>
       <h1 className="h4 mb-4 fw-semibold">Admin Dashboard</h1>
       <Row xs={1} sm={2} lg={3} className="g-3">
-        {statCards.map(({ label, value, variant }) => (
+        {statCards.map(({ label, value, gradient }) => (
           <Col key={label}>
-            <Card className="border-0 shadow-sm h-100">
+            <Card className={`border-0 shadow-sm h-100 ${gradient}`}>
               <Card.Body>
-                <Card.Text className="text-muted small mb-1">{label}</Card.Text>
-                <Card.Title as="div" className={`mb-0 text-${variant} fs-4 fw-bold`}>
+                <Card.Text className="small mb-1" style={{ color: 'var(--app-text-muted)' }}>{label}</Card.Text>
+                <Card.Title as="div" className="mb-0 fs-4 fw-bold" style={{ color: 'var(--app-text)' }}>
                   {value}
                 </Card.Title>
               </Card.Body>

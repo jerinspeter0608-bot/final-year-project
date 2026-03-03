@@ -1,15 +1,30 @@
 /* Bootstrap base */
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
-/* Global theme overrides – minimal, modern */
+/* ── Warm Jewellery Theme ── */
 :root {
-  --app-navbar-bg: #1a1d21;
-  --app-navbar-text: rgba(255, 255, 255, 0.9);
-  --app-navbar-hover: rgba(255, 255, 255, 0.12);
-  --app-navbar-active: rgba(255, 255, 255, 0.18);
-  --app-accent: #0d6efd;
-  --app-body-bg: #f8f9fa;
-  --app-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  /* Core palette */
+  --app-body-bg: #faf3eb;
+  --app-surface: #fff8f2;
+  --app-navbar-bg: #fdf6ee;
+  --app-navbar-text: #5c4033;
+  --app-navbar-hover: rgba(92, 64, 51, 0.08);
+  --app-navbar-active: rgba(92, 64, 51, 0.14);
+  --app-accent: #c4943e;
+  --app-accent-hover: #a87c32;
+  --app-text: #3d2e1f;
+  --app-text-muted: #8c7a6b;
+  --app-border: #ebe0d3;
+  --app-card-shadow: 0 2px 12px rgba(92, 64, 51, 0.07);
+  --app-card-radius: 16px;
+
+  /* Pastel gradient card palette */
+  --card-pink: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+  --card-lavender: linear-gradient(135deg, #ede7f6 0%, #d1c4e9 100%);
+  --card-peach: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+  --card-mint: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  --card-sky: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  --card-rose: linear-gradient(135deg, #fce4ec 0%, #f48fb1 40%, #ce93d8 100%);
 }
 
 * {
@@ -18,10 +33,11 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--app-body-bg);
+  color: var(--app-text);
 }
 
 /* Main content area (used by Layout) */
@@ -29,4 +45,46 @@ body {
   flex: 1;
   padding: 1.5rem 0;
   background-color: var(--app-body-bg);
+}
+
+/* ── Bootstrap overrides for warm theme ── */
+.btn-primary {
+  background-color: var(--app-accent) !important;
+  border-color: var(--app-accent) !important;
+  color: #fff !important;
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--app-accent-hover) !important;
+  border-color: var(--app-accent-hover) !important;
+}
+.btn-primary:focus {
+  box-shadow: 0 0 0 0.25rem rgba(196, 148, 62, 0.3) !important;
+}
+
+.btn-outline-primary {
+  color: var(--app-accent) !important;
+  border-color: var(--app-accent) !important;
+}
+.btn-outline-primary:hover {
+  background-color: var(--app-accent) !important;
+  color: #fff !important;
+}
+
+a {
+  color: var(--app-accent);
+}
+a:hover {
+  color: var(--app-accent-hover);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--app-accent) !important;
+  box-shadow: 0 0 0 0.2rem rgba(196, 148, 62, 0.18) !important;
+}
+
+.badge.bg-light {
+  background-color: var(--app-surface) !important;
+  color: var(--app-text) !important;
 }

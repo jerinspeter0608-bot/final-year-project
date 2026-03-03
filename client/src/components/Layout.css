@@ -1,43 +1,47 @@
-/* Navbar – dark, minimal */
+/* Navbar – warm cream */
 .app-navbar {
   background-color: var(--app-navbar-bg) !important;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: 0 1px 8px rgba(92, 64, 51, 0.06);
+  border-bottom: 1px solid var(--app-border);
 }
 
 .app-navbar .navbar-brand {
-  color: var(--app-navbar-text) !important;
+  color: var(--app-text) !important;
   font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .app-navbar .navbar-brand:hover {
-  color: #fff !important;
+  color: var(--app-accent) !important;
 }
 
 .app-navbar .nav-link {
   color: var(--app-navbar-text) !important;
   font-size: 0.9rem;
   padding: 0.5rem 0.75rem !important;
-  border-radius: 6px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
 }
 
 .app-navbar .nav-link:hover {
   background-color: var(--app-navbar-hover);
-  color: #fff !important;
+  color: var(--app-text) !important;
 }
 
 .app-navbar .nav-link.active {
   background-color: var(--app-navbar-active);
-  color: #fff !important;
-  font-weight: 500;
+  color: var(--app-text) !important;
+  font-weight: 600;
 }
 
 .app-navbar .navbar-toggler {
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: var(--app-border);
   padding: 0.35rem 0.5rem;
 }
 
 .app-navbar .navbar-toggler-icon {
-  filter: invert(1);
+  filter: none;
 }
 
 .app-navbar .dropdown-toggle::after {
@@ -50,5 +54,39 @@
 }
 .app-navbar .dropdown .dropdown-toggle.nav-link:hover,
 .app-navbar .dropdown .dropdown-toggle.nav-link:focus {
-  color: #fff !important;
+  color: var(--app-text) !important;
+}
+
+/* Dropdown menus – warm */
+.app-navbar .dropdown-menu {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(92, 64, 51, 0.1);
+  padding: 0.5rem;
+}
+
+.app-navbar .dropdown-item {
+  border-radius: 8px;
+  color: var(--app-text);
+  font-size: 0.9rem;
+}
+
+.app-navbar .dropdown-item:hover,
+.app-navbar .dropdown-item:focus {
+  background-color: var(--app-navbar-hover);
+  color: var(--app-text);
+}
+
+.app-navbar .dropdown-item.text-danger:hover {
+  background-color: #fce4ec;
+}
+
+/* User dropdown button – warm style */
+.app-navbar .btn-outline-light {
+  color: var(--app-navbar-text) !important;
+  opacity: 1 !important;
+}
+.app-navbar .btn-outline-light:hover {
+  background-color: var(--app-navbar-hover) !important;
 }

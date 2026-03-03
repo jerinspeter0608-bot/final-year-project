@@ -1,13 +1,14 @@
-/* Shared page layout */
+/* ── Shared page layout ── */
 .page {
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .page h1 {
-  margin: 0 0 1rem;
+  margin: 0 0 1.25rem;
   font-size: 1.5rem;
-  color: #1a1a1a;
+  font-weight: 700;
+  color: var(--app-text);
 }
 
 .page-actions {
@@ -17,38 +18,75 @@
   flex-wrap: wrap;
 }
 
-/* Cards grid (dashboard) */
+/* ── Dashboard cards grid ── */
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
   margin-bottom: 2rem;
 }
 
 .card {
-  background: #fff;
+  background: var(--app-surface);
   padding: 1.25rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: var(--app-card-radius);
+  box-shadow: var(--app-card-shadow);
+  border: 1px solid var(--app-border);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(92, 64, 51, 0.1);
 }
 
 .card-title {
   font-size: 0.85rem;
-  color: #666;
-  margin: 0 0 0.25rem;
+  color: var(--app-text-muted);
+  margin: 0 0 0.35rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .card-value {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 700;
-  color: #1976d2;
+  color: var(--app-text);
 }
 
-/* Tables */
+/* Pastel gradient card variants — use on dashboard stat cards */
+.card--pink {
+  background: var(--card-pink);
+  border-color: transparent;
+}
+.card--lavender {
+  background: var(--card-lavender);
+  border-color: transparent;
+}
+.card--peach {
+  background: var(--card-peach);
+  border-color: transparent;
+}
+.card--mint {
+  background: var(--card-mint);
+  border-color: transparent;
+}
+.card--sky {
+  background: var(--card-sky);
+  border-color: transparent;
+}
+.card--rose {
+  background: var(--card-rose);
+  border-color: transparent;
+}
+
+/* ── Tables ── */
 .table-wrap {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: var(--app-surface);
+  border-radius: var(--app-card-radius);
+  box-shadow: var(--app-card-shadow);
+  border: 1px solid var(--app-border);
   overflow-x: auto;
 }
 
@@ -61,18 +99,20 @@ table.data-table {
 .data-table td {
   padding: 0.75rem 1rem;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--app-border);
 }
 
 .data-table th {
-  background: #f5f5f5;
+  background: #faf3eb;
   font-weight: 600;
-  color: #333;
-  font-size: 0.9rem;
+  color: var(--app-text);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .data-table tr:hover td {
-  background: #fafafa;
+  background: rgba(196, 148, 62, 0.04);
 }
 
 .data-table .low-stock {
@@ -84,12 +124,13 @@ table.data-table {
   color: #c62828;
   font-weight: 700;
   background: #ffebee;
+  border-radius: 6px;
 }
 
-/* Buttons */
+/* ── Buttons ── */
 .btn {
   padding: 0.5rem 1rem;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
@@ -97,33 +138,34 @@ table.data-table {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+  transition: all 0.2s ease;
 }
 
 .btn-primary {
-  background: #1976d2;
+  background: var(--app-accent);
   color: #fff;
 }
 
 .btn-primary:hover {
-  background: #1565c0;
+  background: var(--app-accent-hover);
 }
 
 .btn-secondary {
-  background: #e0e0e0;
-  color: #333;
+  background: var(--app-border);
+  color: var(--app-text);
 }
 
 .btn-secondary:hover {
-  background: #d0d0d0;
+  background: #ddd0c0;
 }
 
 .btn-danger {
-  background: #c62828;
+  background: #e57373;
   color: #fff;
 }
 
 .btn-danger:hover {
-  background: #b71c1c;
+  background: #c62828;
 }
 
 .btn-sm {
@@ -131,12 +173,13 @@ table.data-table {
   font-size: 0.85rem;
 }
 
-/* Forms */
+/* ── Forms ── */
 .form-card {
-  background: #fff;
+  background: var(--app-surface);
   padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: var(--app-card-radius);
+  box-shadow: var(--app-card-shadow);
+  border: 1px solid var(--app-border);
   max-width: 500px;
   margin-bottom: 1.5rem;
 }
@@ -144,6 +187,7 @@ table.data-table {
 .form-card h2 {
   margin: 0 0 1rem;
   font-size: 1.1rem;
+  color: var(--app-text);
 }
 
 .form-row {
@@ -154,7 +198,7 @@ table.data-table {
   display: block;
   font-weight: 500;
   margin-bottom: 0.35rem;
-  color: #333;
+  color: var(--app-text);
 }
 
 .form-row input,
@@ -162,15 +206,17 @@ table.data-table {
 .form-row textarea {
   width: 100%;
   padding: 0.5rem 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  border: 1px solid var(--app-border);
+  border-radius: 10px;
   font-size: 1rem;
+  background: #fffbf7;
 }
 
 .form-row input:focus,
 .form-row select:focus {
   outline: none;
-  border-color: #1976d2;
+  border-color: var(--app-accent);
+  box-shadow: 0 0 0 3px rgba(196, 148, 62, 0.15);
 }
 
 .form-actions {
@@ -179,39 +225,42 @@ table.data-table {
   gap: 0.5rem;
 }
 
-/* Modal overlay */
+/* ── Modal overlay ── */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(61, 46, 31, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 100;
   padding: 1rem;
+  backdrop-filter: blur(4px);
 }
 
 .modal {
-  background: #fff;
-  border-radius: 8px;
+  background: var(--app-surface);
+  border-radius: var(--app-card-radius);
   padding: 1.5rem;
   max-width: 480px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
+  box-shadow: 0 8px 40px rgba(92, 64, 51, 0.15);
 }
 
 .modal h2 {
   margin: 0 0 1rem;
   font-size: 1.25rem;
+  color: var(--app-text);
 }
 
-/* Messages */
+/* ── Messages ── */
 .error-msg {
-  background: #ffebee;
+  background: #fce4ec;
   color: #c62828;
   padding: 0.6rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 10px;
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
@@ -220,13 +269,13 @@ table.data-table {
   background: #e8f5e9;
   color: #2e7d32;
   padding: 0.6rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 10px;
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
 
 .empty-msg {
-  color: #666;
+  color: var(--app-text-muted);
   padding: 2rem;
   text-align: center;
 }
