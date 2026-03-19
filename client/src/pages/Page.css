@@ -18,68 +18,25 @@
   flex-wrap: wrap;
 }
 
-/* ── Dashboard cards grid ── */
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.card {
+/* ── Dashboard stat cards ── */
+.stat-card {
   background: var(--app-surface);
-  padding: 1.25rem;
+  border: 1px solid var(--app-border);
   border-radius: var(--app-card-radius);
   box-shadow: var(--app-card-shadow);
-  border: 1px solid var(--app-border);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-left: 4px solid var(--app-accent);
+  transition: box-shadow 0.2s ease;
+}
+.stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(92, 64, 51, 0.1);
-}
-
-.card-title {
-  font-size: 0.85rem;
-  color: var(--app-text-muted);
-  margin: 0 0 0.35rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.card-value {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--app-text);
-}
-
-/* Pastel gradient card variants — use on dashboard stat cards */
-.card--pink {
-  background: var(--card-pink);
-  border-color: transparent;
-}
-.card--lavender {
-  background: var(--card-lavender);
-  border-color: transparent;
-}
-.card--peach {
-  background: var(--card-peach);
-  border-color: transparent;
-}
-.card--mint {
-  background: var(--card-mint);
-  border-color: transparent;
-}
-.card--sky {
-  background: var(--card-sky);
-  border-color: transparent;
-}
-.card--rose {
-  background: var(--card-rose);
-  border-color: transparent;
-}
+.stat-card--teal    { border-left-color: #2d9b83; }
+.stat-card--amber   { border-left-color: #f59e0b; }
+.stat-card--red     { border-left-color: #ef4444; }
+.stat-card--blue    { border-left-color: #3b82f6; }
+.stat-card--green   { border-left-color: #10b981; }
+.stat-card--purple  { border-left-color: #8b5cf6; }
 
 /* ── Tables ── */
 .table-wrap {
@@ -103,74 +60,76 @@ table.data-table {
 }
 
 .data-table th {
-  background: #faf3eb;
+  background: #f8faf9;
   font-weight: 600;
-  color: var(--app-text);
-  font-size: 0.85rem;
+  color: var(--app-text-muted);
+  font-size: 0.8rem;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
 }
 
 .data-table tr:hover td {
-  background: rgba(196, 148, 62, 0.04);
+  background: var(--app-accent-light);
 }
 
 .data-table .low-stock {
-  color: #c62828;
+  color: #f59e0b;
   font-weight: 600;
 }
 
 .data-table .out-of-stock {
-  color: #c62828;
+  color: #ef4444;
   font-weight: 700;
-  background: #ffebee;
-  border-radius: 6px;
+}
+
+/* Bootstrap table-light override for table headers */
+.table-light {
+  --bs-table-bg: #f8faf9 !important;
+  --bs-table-border-color: var(--app-border) !important;
 }
 
 /* ── Buttons ── */
 .btn {
   padding: 0.5rem 1rem;
-  border-radius: 10px;
-  font-size: 0.9rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
   font-weight: 500;
   cursor: pointer;
   border: none;
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .btn-primary {
   background: var(--app-accent);
   color: #fff;
 }
-
 .btn-primary:hover {
   background: var(--app-accent-hover);
 }
 
 .btn-secondary {
-  background: var(--app-border);
+  background: #f3f4f6;
   color: var(--app-text);
+  border: 1px solid var(--app-border);
 }
-
 .btn-secondary:hover {
-  background: #ddd0c0;
+  background: #e5e7eb;
 }
 
 .btn-danger {
-  background: #e57373;
+  background: #ef4444;
   color: #fff;
 }
-
 .btn-danger:hover {
-  background: #c62828;
+  background: #dc2626;
 }
 
 .btn-sm {
   padding: 0.35rem 0.65rem;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
 }
 
 /* ── Forms ── */
@@ -199,6 +158,7 @@ table.data-table {
   font-weight: 500;
   margin-bottom: 0.35rem;
   color: var(--app-text);
+  font-size: 0.88rem;
 }
 
 .form-row input,
@@ -207,16 +167,17 @@ table.data-table {
   width: 100%;
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--app-border);
-  border-radius: 10px;
-  font-size: 1rem;
-  background: #fffbf7;
+  border-radius: 8px;
+  font-size: 0.925rem;
+  background: #fafafa;
 }
 
 .form-row input:focus,
 .form-row select:focus {
   outline: none;
   border-color: var(--app-accent);
-  box-shadow: 0 0 0 3px rgba(196, 148, 62, 0.15);
+  box-shadow: 0 0 0 3px rgba(45, 155, 131, 0.12);
+  background: #fff;
 }
 
 .form-actions {
@@ -225,53 +186,50 @@ table.data-table {
   gap: 0.5rem;
 }
 
-/* ── Modal overlay ── */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(61, 46, 31, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  padding: 1rem;
-  backdrop-filter: blur(4px);
+/* Bootstrap modal override */
+.modal-content {
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-card-radius) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+.modal-header {
+  border-bottom-color: var(--app-border);
+}
+.modal-footer {
+  border-top-color: var(--app-border);
 }
 
-.modal {
-  background: var(--app-surface);
+/* ── Card overrides for Bootstrap Cards used in pages ── */
+.card.border-0.shadow-sm {
+  border: 1px solid var(--app-border) !important;
+  box-shadow: var(--app-card-shadow) !important;
   border-radius: var(--app-card-radius);
-  padding: 1.5rem;
-  max-width: 480px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 8px 40px rgba(92, 64, 51, 0.15);
 }
 
-.modal h2 {
-  margin: 0 0 1rem;
-  font-size: 1.25rem;
-  color: var(--app-text);
+.card-header.bg-white {
+  background: var(--app-surface) !important;
+  border-bottom-color: var(--app-border) !important;
 }
 
 /* ── Messages ── */
 .error-msg {
-  background: #fce4ec;
-  color: #c62828;
+  background: #fef2f2;
+  color: #dc2626;
   padding: 0.6rem 0.75rem;
-  border-radius: 10px;
+  border-radius: 8px;
   margin-bottom: 1rem;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
+  border: 1px solid #fecaca;
 }
 
 .success-msg {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: #f0fdf4;
+  color: #16a34a;
   padding: 0.6rem 0.75rem;
-  border-radius: 10px;
+  border-radius: 8px;
   margin-bottom: 1rem;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
+  border: 1px solid #bbf7d0;
 }
 
 .empty-msg {

@@ -1,0 +1,103 @@
+Small Business Inventory Monitor System – Database Schemas (MongoDB/Mongoose)
+
+Notes
+- This project uses MongoDB via Mongoose. Each “table” below corresponds to a MongoDB collection.
+- Mongoose automatically adds an `_id` field of type `ObjectId` to every document.
+- Many schemas use `timestamps: true`, so `createdAt` and `updatedAt` are automatically added.
+
+============================================================
+1) Users Collection (Model: User)
+============================================================
+
+| Field Name | Data Type | Constraints | Required | Description |
+|-----------|-----------|-------------|----------|-------------|
+| _id | ObjectId | Auto-generated | Yes | Primary key for user document |
+| name | String | — | Yes | User’s display name |
+| email | String | Unique | Yes | User email for login (must be unique) |
+| password | String | — | Yes | Hashed password |
+| role | String | Enum: admin, inventory, sales, supplier; Default: sales | No | Role used for role-based access |
+| createdAt | Date | Auto (timestamps) | Yes | Created time |
+| updatedAt | Date | Auto (timestamps) | Yes | Last updated time |
+
+============================================================
+2) Products Collection (Model: Product)
+============================================================
+
+| Field Name | Data Type | Constraints | Required | Description |
+|-----------|-----------|-------------|----------|-------------|
+| _id | ObjectId | Auto-generated | Yes | Primary key for product document |
+| productName | String | — | Yes | Name of the product |
+| description | String | Default: "" | No | Optional description |
+| category | String | Default: "" | No | Optional category |
+| price | Number | Min: 0 | Yes | Unit price of the product |
+| quantity | Number | Min: 0; Default: 0 | Yes | Current available stock |
+| minThreshold | Number | Min: 0; Default: 0 | Yes | Low-stock alert threshold |
+| createdAt | Date | Auto (timestamps) | Yes | Created time |
+| updatedAt | Date | Auto (timestamps) | Yes | Last updated time |
+
+============================================================
+3) Sales Collection (Model: Sale)
+============================================================
+
+| Field Name | Data Type | Constraints | Required | Description |
+|-----------|-----------|-------------|----------|-------------|
+| _id | ObjectId | Auto-generated | Yes | Primary key for sale document |
+| productId | ObjectId | Ref: Product | Yes | Product sold |
+| quantitySold | Number | Min: 1 | Yes | Quantity sold |
+| totalAmount | Number | Min: 0 | Yes | Total amount for this sale (price × quantity) |
+| soldBy | ObjectId | Ref: User | Yes | User who recorded the sale |
+| createdAt | Date | Auto (timestamps) | Yes | Sale date/time |
+| updatedAt | Date | Auto (timestamps) | Yes | Last updated time |
+
+============================================================
+4) Suppliers Collection (Model: Supplier)
+============================================================
+
+| Field Name | Data Type | Constraints | Required | Description |
+|-----------|-----------|-------------|----------|-------------|
+| _id | ObjectId | Auto-generated | Yes | Primary key for supplier document |
+| supplierName | String | — | Yes | Supplier company/name |
+| contactNumber | String | Default: "" | No | Optional contact number |
+| email | String | Default: "" | No | Optional email |
+| address | String | Default: "" | No | Optional address |
+| createdAt | Date | Auto (timestamps) | Yes | Created time |
+| updatedAt | Date | Auto (timestamps) | Yes | Last updated time |
+
+============================================================
+5) Restocks Collection (Model: Restock)
+============================================================
+
+| Field Name | Data Type | Constraints | Required | Description |
+|-----------|-----------|-------------|----------|-------------|
+| _id | ObjectId | Auto-generated | Yes | Primary key for restock document |
+| productId | ObjectId | Ref: Product | Yes | Product being restocked |
+| supplierId | ObjectId | Ref: Supplier | Yes | Supplier who provided stock |
+| quantityAdded | Number | Min: 1 | Yes | Quantity added to stock |
+| createdAt | Date | Auto (timestamps) | Yes | Restock date/time (used as restock date) |
+| updatedAt | Date | Auto (timestamps) | Yes | Last updated time |
+
+============================================================
+6) Requests Collection (Model: Request)
+============================================================
+
+| Field Name | Data Type | Constraints | Required | Description |
+|-----------|-----------|-------------|----------|-------------|
+| _id | ObjectId | Auto-generated | Yes | Primary key for request document |
+| type | String | Enum: refill, new_product | Yes | Request type |
+| productId | ObjectId | Ref: Product | Conditional | Refill request target product (used when type=refill) |
+| quantityRequested | Number | Min: 1 | Conditional | Requested quantity (used when type=refill) |
+| productName | String | — | Conditional | Requested new product name (used when type=new_product) |
+| description | String | — | No | Suggested description for new product |
+| category | String | — | No | Suggested category for new product |
+| suggestedPrice | Number | — | No | Suggested price for new product |
+| suggestedQuantity | Number | — | No | Suggested initial quantity for new product |
+| suggestedMinThreshold | Number | — | No | Suggested min threshold for new product |
+| note | String | — | No | Optional note from requester |
+| requestedBy | ObjectId | Ref: User | Yes | Inventory/admin user who created request |
+| status | String | Enum: pending, fulfilled, rejected; Default: pending | No | Current request status |
+| fulfilledBy | ObjectId | Ref: User | No | Admin/supplier user who fulfilled/rejected |
+| fulfilledAt | Date | — | No | Date/time when request was fulfilled/rejected |
+| rejectionReason | String | — | No | Optional rejection reason (when rejected) |
+| createdAt | Date | Auto (timestamps) | Yes | Created time |
+| updatedAt | Date | Auto (timestamps) | Yes | Last updated time |
+

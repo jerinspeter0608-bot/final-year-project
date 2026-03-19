@@ -4,3 +4,5 @@ project_spec.txt
 
 .env.example
 .env.local
+
+dist

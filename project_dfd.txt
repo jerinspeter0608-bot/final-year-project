@@ -1,0 +1,323 @@
+Small Business Inventory Monitor System – DFD (Mermaid)
+
+Notes
+- These are Data Flow Diagrams expressed using Mermaid `flowchart` so you can render them later.
+- Notation used:
+  - External Entities: [Entity]
+  - Processes: (Process)
+  - Data Stores: [[Data Store]]
+
+============================================================
+DFD Level 0 (Context Diagram) – Entire Project
+============================================================
+
+```mermaid
+flowchart LR
+  %% External entities
+  Admin[Admin]
+  Inventory[Inventory & Stock Controller]
+  Sales[Sales Staff]
+  Supplier[Supplier Manager]
+  Customer[Customer]
+
+  %% System (single process)
+  System((Small Business Inventory Monitor System))
+
+  %% Data flows
+  Admin -->|Register/Login / Manage users / View dashboard & reports / Approve-fulfill requests| System
+  Inventory -->|Login / Manage products / Request refill & new product| System
+  Sales -->|Login / Record sales / Generate bill / View daily history| System
+  Supplier -->|Login / Manage suppliers / Record restock / Fulfill or reject requests| System
+  Customer -->|Purchase details (items/qty)| System
+
+  System -->|Dashboards / Reports / Module screens / Status updates| Admin
+  System -->|Product lists / Low-stock status / Request status| Inventory
+  System -->|Bills / Sales history / Product availability| Sales
+  System -->|Supplier lists / Restock history / Request queue| Supplier
+  System -->|Bill/receipt| Customer
+```
+
+============================================================
+DFD Level 1 – Entire Project (Major Processes & Data Stores)
+============================================================
+
+```mermaid
+flowchart LR
+  %% External entities
+  Admin[Admin]
+  Inventory[Inventory & Stock Controller]
+  Sales[Sales Staff]
+  Supplier[Supplier Manager]
+  Customer[Customer]
+
+  %% Processes
+  P1((P1 Authentication & Session))
+  P2((P2 User Management))
+  P3((P3 Product & Stock Management))
+  P4((P4 Sales Transaction Processing))
+  P5((P5 Supplier Management))
+  P6((P6 Restocking))
+  P7((P7 Refill/New-Product Requests))
+  P8((P8 Dashboard & Reports))
+
+  %% Data stores
+  D1[[D1 Users]]
+  D2[[D2 Products]]
+  D3[[D3 Sales]]
+  D4[[D4 Suppliers]]
+  D5[[D5 Restocks]]
+  D6[[D6 Requests]]
+
+  %% Auth flows
+  Admin -->|register/login credentials| P1
+  Inventory -->|credentials| P1
+  Sales -->|credentials| P1
+  Supplier -->|credentials| P1
+  P1 -->|token / user profile| Admin
+  P1 -->|token / user profile| Inventory
+  P1 -->|token / user profile| Sales
+  P1 -->|token / user profile| Supplier
+  P1 <--> D1
+
+  %% User management (admin)
+  Admin -->|create/update/delete users| P2
+  P2 <--> D1
+  P2 -->|user list / confirmations| Admin
+
+  %% Products & stock (admin/inventory; also read by sales/supplier)
+  Admin -->|CRUD products| P3
+  Inventory -->|CRUD products / thresholds| P3
+  Sales -->|read products (availability)| P3
+  Supplier -->|read products (for restock)| P3
+  P3 <--> D2
+  P3 -->|product lists / low-stock info| Admin
+  P3 -->|product lists / low-stock info| Inventory
+  P3 -->|product lists| Sales
+  P3 -->|product lists| Supplier
+
+  %% Sales processing
+  Customer -->|purchase request (items/qty)| P4
+  Sales -->|record sale| P4
+  Admin -->|record sale (optional)| P4
+  P4 -->|decrease stock| D2
+  P4 -->|sale record| D3
+  P4 -->|bill / sale confirmation| Sales
+  P4 -->|bill/receipt| Customer
+  P4 -->|sales history| Sales
+
+  %% Supplier management
+  Supplier -->|CRUD suppliers| P5
+  Admin -->|CRUD suppliers (demo)| P5
+  P5 <--> D4
+  P5 -->|supplier list| Supplier
+
+  %% Restocking
+  Supplier -->|record restock| P6
+  Admin -->|record restock (demo)| P6
+  P6 -->|increase stock| D2
+  P6 -->|restock record| D5
+  P6 -->|restock history| Supplier
+
+  %% Requests
+  Inventory -->|create refill/new-product request| P7
+  Admin -->|create/fulfill/reject request| P7
+  Supplier -->|fulfill/reject request| P7
+  P7 <--> D6
+  P7 -->|if fulfill refill: restock record| D5
+  P7 -->|if fulfill refill: increase stock| D2
+  P7 -->|if fulfill new product: create product| D2
+  P7 -->|status updates| Inventory
+  P7 -->|pending queue| Admin
+  P7 -->|pending queue| Supplier
+
+  %% Dashboard & Reports (admin)
+  Admin -->|view dashboard/reports| P8
+  P8 -->|read users/products/sales/restocks/requests| D1
+  P8 -->|read users/products/sales/restocks/requests| D2
+  P8 -->|read users/products/sales/restocks/requests| D3
+  P8 -->|read users/products/sales/restocks/requests| D5
+  P8 -->|read users/products/sales/restocks/requests| D6
+  P8 -->|stats / reports| Admin
+```
+
+============================================================
+DFD Level 1.1 – Admin Module
+============================================================
+
+```mermaid
+flowchart LR
+  Admin[Admin]
+
+  %% Processes (admin-facing)
+  A1((A1 Login/Session))
+  A2((A2 Manage Users))
+  A3((A3 Dashboard Stats))
+  A4((A4 Reports))
+  A5((A5 Manage Requests: fulfill/reject))
+  A6((A6 Demo Access: manage products/sales/suppliers/restock))
+
+  %% Data stores
+  D1[[Users]]
+  D2[[Products]]
+  D3[[Sales]]
+  D4[[Suppliers]]
+  D5[[Restocks]]
+  D6[[Requests]]
+
+  Admin -->|credentials| A1
+  A1 <--> D1
+  A1 -->|token + profile| Admin
+
+  Admin -->|create/update/delete user| A2
+  A2 <--> D1
+  A2 -->|user list/confirmation| Admin
+
+  Admin -->|view dashboard| A3
+  A3 -->|read| D2
+  A3 -->|read| D3
+  A3 -->|read| D6
+  A3 -->|stats| Admin
+
+  Admin -->|view reports| A4
+  A4 -->|read| D3
+  A4 -->|read| D5
+  A4 -->|report tables| Admin
+
+  Admin -->|fulfill / reject request| A5
+  A5 <--> D6
+  A5 -->|if refill: create restock| D5
+  A5 -->|if refill: update stock| D2
+  A5 -->|if new product: create product| D2
+  A5 -->|status updated| Admin
+
+  %% Demo convenience links (via More dropdown)
+  Admin -->|open modules| A6
+  A6 -->|CRUD/record| D2
+  A6 -->|record sales| D3
+  A6 -->|CRUD suppliers| D4
+  A6 -->|record restock| D5
+```
+
+============================================================
+DFD Level 1.2 – Inventory & Stock Controller Module
+============================================================
+
+```mermaid
+flowchart LR
+  Inventory[Inventory & Stock Controller]
+
+  I1((I1 Login/Session))
+  I2((I2 Product Management))
+  I3((I3 Low-Stock Monitoring))
+  I4((I4 Request Refill/New Product))
+  I5((I5 Track Request Status))
+
+  D1[[Users]]
+  D2[[Products]]
+  D6[[Requests]]
+
+  Inventory -->|credentials| I1
+  I1 <--> D1
+  I1 -->|token + profile| Inventory
+
+  Inventory -->|add/edit/delete products| I2
+  I2 <--> D2
+  I2 -->|product list| Inventory
+
+  Inventory -->|view low stock/out of stock| I3
+  I3 -->|read quantities & thresholds| D2
+  I3 -->|highlighted list| Inventory
+
+  Inventory -->|create refill/new-product request| I4
+  I4 -->|write request| D6
+  I4 -->|confirmation| Inventory
+
+  Inventory -->|view request statuses| I5
+  I5 -->|read own requests| D6
+  I5 -->|pending/fulfilled/rejected + reason| Inventory
+```
+
+============================================================
+DFD Level 1.3 – Sales Staff Module
+============================================================
+
+```mermaid
+flowchart LR
+  Sales[Sales Staff]
+  Customer[Customer]
+
+  S1((S1 Login/Session))
+  S2((S2 View Product Availability))
+  S3((S3 Record Sale & Generate Bill))
+  S4((S4 View Daily Sales History))
+
+  D1[[Users]]
+  D2[[Products]]
+  D3[[Sales]]
+
+  Sales -->|credentials| S1
+  S1 <--> D1
+  S1 -->|token + profile| Sales
+
+  Sales -->|view products| S2
+  S2 -->|read product list| D2
+  S2 -->|available items| Sales
+
+  Customer -->|items/qty to purchase| S3
+  Sales -->|sale details (product, qty)| S3
+  S3 -->|read price| D2
+  S3 -->|update quantity (decrease)| D2
+  S3 -->|write sale record| D3
+  S3 -->|bill| Sales
+  S3 -->|bill/receipt| Customer
+
+  Sales -->|view daily history| S4
+  S4 -->|read sales by date| D3
+  S4 -->|history list| Sales
+```
+
+============================================================
+DFD Level 1.4 – Supplier Manager Module
+============================================================
+
+```mermaid
+flowchart LR
+  Supplier[Supplier Manager]
+
+  M1((M1 Login/Session))
+  M2((M2 Supplier Management))
+  M3((M3 Restock Processing))
+  M4((M4 Fulfill/Reject Requests))
+  M5((M5 View Restock History))
+
+  D1[[Users]]
+  D2[[Products]]
+  D4[[Suppliers]]
+  D5[[Restocks]]
+  D6[[Requests]]
+
+  Supplier -->|credentials| M1
+  M1 <--> D1
+  M1 -->|token + profile| Supplier
+
+  Supplier -->|add/edit/delete supplier| M2
+  M2 <--> D4
+  M2 -->|supplier list| Supplier
+
+  Supplier -->|record restock (product, supplier, qty)| M3
+  M3 -->|update product quantity (increase)| D2
+  M3 -->|write restock record| D5
+  M3 -->|confirmation| Supplier
+
+  Supplier -->|fulfill/reject requests| M4
+  M4 <--> D6
+  M4 -->|if refill fulfill: update stock| D2
+  M4 -->|if refill fulfill: create restock| D5
+  M4 -->|if new product fulfill: create product| D2
+  M4 -->|status updated| Supplier
+
+  Supplier -->|view restock history| M5
+  M5 -->|read restocks| D5
+  M5 -->|history list| Supplier
+```
+

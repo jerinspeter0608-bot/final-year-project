@@ -9,6 +9,7 @@ import {
   Alert,
   Spinner,
   Badge,
+  InputGroup,
 } from 'react-bootstrap'
 
 const ROLES = [
@@ -26,6 +27,7 @@ export default function AdminUsers() {
   const [showModal, setShowModal] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'sales' })
+  const [showPw, setShowPw] = useState(false)
 
   const loadUsers = () => {
     api('/users')
@@ -187,14 +189,25 @@ export default function AdminUsers() {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Password {editingId && '(leave blank to keep current)'}</Form.Label>
-              <Form.Control
-                type="password"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-                minLength={editingId ? 0 : 6}
-                required={!editingId}
-                placeholder={editingId ? '••••••••' : 'Min. 6 characters'}
-              />
+              <InputGroup>
+                <Form.Control
+                  type={showPw ? 'text' : 'password'}
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  minLength={editingId ? 0 : 6}
+                  required={!editingId}
+                  placeholder={editingId ? '••••••••' : 'Min. 6 characters'}
+                />
+                <Button
+                  variant="outline-secondary"
+                  onClick={() => setShowPw(!showPw)}
+                  tabIndex={-1}
+                  className="pw-toggle"
+                  type="button"
+                >
+                  {showPw ? '🙈' : '👁'}
+                </Button>
+              </InputGroup>
             </Form.Group>
             <Form.Group className="mb-0">
               <Form.Label>Role</Form.Label>

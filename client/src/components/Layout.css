@@ -1,92 +1,233 @@
-/* Navbar – warm cream */
-.app-navbar {
-  background-color: var(--app-navbar-bg) !important;
-  box-shadow: 0 1px 8px rgba(92, 64, 51, 0.06);
-  border-bottom: 1px solid var(--app-border);
+/* ── Layout shell ── */
+.layout {
+  display: flex;
+  min-height: 100vh;
 }
 
-.app-navbar .navbar-brand {
-  color: var(--app-text) !important;
-  font-size: 1.15rem;
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--sidebar-width);
+  min-height: 100vh;
+  background: var(--sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1000;
+  transition: transform 0.25s ease;
+}
+
+/* Brand */
+.sidebar-brand {
+  padding: 1.25rem 1.25rem 0.75rem;
+}
+.sidebar-brand-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #fff !important;
+  text-decoration: none !important;
+  font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
-
-.app-navbar .navbar-brand:hover {
-  color: var(--app-accent) !important;
+.sidebar-brand-icon {
+  font-size: 1.4rem;
+  color: var(--sidebar-active-text);
 }
 
-.app-navbar .nav-link {
-  color: var(--app-navbar-text) !important;
-  font-size: 0.9rem;
-  padding: 0.5rem 0.75rem !important;
-  border-radius: 10px;
-  transition: all 0.2s ease;
+/* Navigation */
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 0.75rem;
 }
 
-.app-navbar .nav-link:hover {
-  background-color: var(--app-navbar-hover);
-  color: var(--app-text) !important;
+.sidebar-section {
+  margin-bottom: 0.5rem;
 }
 
-.app-navbar .nav-link.active {
-  background-color: var(--app-navbar-active);
-  color: var(--app-text) !important;
+.sidebar-section-title {
+  font-size: 0.7rem;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--sidebar-section);
+  padding: 0.75rem 0.75rem 0.35rem;
 }
 
-.app-navbar .navbar-toggler {
-  border-color: var(--app-border);
-  padding: 0.35rem 0.5rem;
-}
-
-.app-navbar .navbar-toggler-icon {
-  filter: none;
-}
-
-.app-navbar .dropdown-toggle::after {
-  margin-left: 0.35rem;
-}
-
-/* Admin "More" dropdown – match nav link style */
-.app-navbar .dropdown .dropdown-toggle.nav-link {
-  color: var(--app-navbar-text) !important;
-}
-.app-navbar .dropdown .dropdown-toggle.nav-link:hover,
-.app-navbar .dropdown .dropdown-toggle.nav-link:focus {
-  color: var(--app-text) !important;
-}
-
-/* Dropdown menus – warm */
-.app-navbar .dropdown-menu {
-  background: var(--app-surface);
-  border: 1px solid var(--app-border);
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(92, 64, 51, 0.1);
-  padding: 0.5rem;
-}
-
-.app-navbar .dropdown-item {
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.75rem;
   border-radius: 8px;
+  color: var(--sidebar-text);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 400;
+  transition: all 0.15s ease;
+  margin-bottom: 2px;
+}
+
+.sidebar-link:hover {
+  color: var(--sidebar-text-hover);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sidebar-link--active {
+  color: var(--sidebar-active-text) !important;
+  background: var(--sidebar-active-bg) !important;
+  font-weight: 500;
+}
+
+.sidebar-link-icon {
+  font-size: 1rem;
+  width: 1.25rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* Footer / user area */
+.sidebar-footer {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--sidebar-active-bg);
+  color: var(--sidebar-active-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.sidebar-user-name {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  font-size: 0.88rem;
+  line-height: 1.2;
+}
+
+.sidebar-user-role {
+  color: var(--sidebar-section);
+  font-size: 0.72rem;
+  text-transform: capitalize;
+}
+
+.sidebar-logout {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 0.45rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.sidebar-logout:hover {
+  background: rgba(220, 53, 69, 0.15);
+  color: #f87171;
+}
+
+/* ── Main content area ── */
+.layout-main {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.layout-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  background: var(--app-surface);
+  border-bottom: 1px solid var(--app-border);
+}
+
+.layout-header-greeting {
+  font-size: 0.95rem;
+  color: var(--app-text-muted);
+}
+.layout-header-greeting strong {
   color: var(--app-text);
-  font-size: 0.9rem;
 }
 
-.app-navbar .dropdown-item:hover,
-.app-navbar .dropdown-item:focus {
-  background-color: var(--app-navbar-hover);
-  color: var(--app-text);
+.layout-content {
+  flex: 1;
+  padding: 1.5rem 2rem;
+  max-width: 1280px;
+  width: 100%;
 }
 
-.app-navbar .dropdown-item.text-danger:hover {
-  background-color: #fce4ec;
+/* Mobile hamburger */
+.sidebar-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.sidebar-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--app-text);
+  border-radius: 2px;
 }
 
-/* User dropdown button – warm style */
-.app-navbar .btn-outline-light {
-  color: var(--app-navbar-text) !important;
-  opacity: 1 !important;
+/* Mobile overlay */
+.sidebar-overlay {
+  display: none;
 }
-.app-navbar .btn-outline-light:hover {
-  background-color: var(--app-navbar-hover) !important;
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar--open {
+    transform: translateX(0);
+  }
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    backdrop-filter: blur(2px);
+  }
+  .layout-main {
+    margin-left: 0;
+  }
+  .sidebar-toggle {
+    display: flex;
+  }
+  .layout-content {
+    padding: 1rem;
+  }
+  .layout-header {
+    padding: 0.75rem 1rem;
+  }
 }

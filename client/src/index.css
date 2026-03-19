@@ -1,30 +1,28 @@
 /* Bootstrap base */
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
-/* ── Warm Jewellery Theme ── */
+/* ── Modern Teal Theme ── */
 :root {
-  /* Core palette */
-  --app-body-bg: #faf3eb;
-  --app-surface: #fff8f2;
-  --app-navbar-bg: #fdf6ee;
-  --app-navbar-text: #5c4033;
-  --app-navbar-hover: rgba(92, 64, 51, 0.08);
-  --app-navbar-active: rgba(92, 64, 51, 0.14);
-  --app-accent: #c4943e;
-  --app-accent-hover: #a87c32;
-  --app-text: #3d2e1f;
-  --app-text-muted: #8c7a6b;
-  --app-border: #ebe0d3;
-  --app-card-shadow: 0 2px 12px rgba(92, 64, 51, 0.07);
-  --app-card-radius: 16px;
+  /* Sidebar */
+  --sidebar-bg: #1a2e35;
+  --sidebar-text: rgba(255, 255, 255, 0.65);
+  --sidebar-text-hover: rgba(255, 255, 255, 0.9);
+  --sidebar-active-bg: rgba(45, 155, 131, 0.2);
+  --sidebar-active-text: #5fd4b9;
+  --sidebar-section: rgba(255, 255, 255, 0.35);
+  --sidebar-width: 260px;
 
-  /* Pastel gradient card palette */
-  --card-pink: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
-  --card-lavender: linear-gradient(135deg, #ede7f6 0%, #d1c4e9 100%);
-  --card-peach: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
-  --card-mint: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-  --card-sky: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-  --card-rose: linear-gradient(135deg, #fce4ec 0%, #f48fb1 40%, #ce93d8 100%);
+  /* Core palette */
+  --app-body-bg: #f0f5f3;
+  --app-surface: #ffffff;
+  --app-accent: #2d9b83;
+  --app-accent-hover: #237e6a;
+  --app-accent-light: rgba(45, 155, 131, 0.08);
+  --app-text: #1a1a2e;
+  --app-text-muted: #6b7280;
+  --app-border: #e5e7eb;
+  --app-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --app-card-radius: 12px;
 }
 
 * {
@@ -33,21 +31,16 @@
 
 body {
   margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--app-body-bg);
   color: var(--app-text);
+  font-size: 0.925rem;
 }
 
-/* Main content area (used by Layout) */
-.app-main {
-  flex: 1;
-  padding: 1.5rem 0;
-  background-color: var(--app-body-bg);
-}
-
-/* ── Bootstrap overrides for warm theme ── */
+/* ── Bootstrap overrides ── */
 .btn-primary {
   background-color: var(--app-accent) !important;
   border-color: var(--app-accent) !important;
@@ -59,7 +52,7 @@ body {
   border-color: var(--app-accent-hover) !important;
 }
 .btn-primary:focus {
-  box-shadow: 0 0 0 0.25rem rgba(196, 148, 62, 0.3) !important;
+  box-shadow: 0 0 0 0.25rem rgba(45, 155, 131, 0.3) !important;
 }
 
 .btn-outline-primary {
@@ -81,10 +74,48 @@ a:hover {
 .form-control:focus,
 .form-select:focus {
   border-color: var(--app-accent) !important;
-  box-shadow: 0 0 0 0.2rem rgba(196, 148, 62, 0.18) !important;
+  box-shadow: 0 0 0 0.2rem rgba(45, 155, 131, 0.15) !important;
 }
 
-.badge.bg-light {
-  background-color: var(--app-surface) !important;
+.badge {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.nav-tabs .nav-link.active {
+  color: var(--app-accent) !important;
+  border-color: #dee2e6 #dee2e6 #fff !important;
+  font-weight: 600;
+}
+.nav-tabs .nav-link {
+  color: var(--app-text-muted);
+}
+.nav-tabs .nav-link:hover {
+  color: var(--app-accent);
+}
+
+.card {
+  border-radius: var(--app-card-radius);
+}
+
+.spinner-border.text-primary,
+.spinner-border[class*="text-primary"] {
+  color: var(--app-accent) !important;
+}
+
+/* Password visibility toggle */
+.pw-toggle {
+  border-color: var(--app-border) !important;
+  background: #fafafa !important;
+  color: var(--app-text-muted) !important;
+  font-size: 0.95rem;
+  padding: 0 0.65rem !important;
+  line-height: 1;
+}
+.pw-toggle:hover {
+  background: var(--app-border) !important;
   color: var(--app-text) !important;
+}
+.pw-toggle:focus {
+  box-shadow: none !important;
 }
